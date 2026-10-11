@@ -1,0 +1,62 @@
+spring:
+  application:
+    name: kafka-apigateway-bridge
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+
+    consumer:
+      group-id: ${KAFKA_CONSUMER_GROUP:bridge-group}
+      auto-offset-reset: ${KAFKA_AUTO_OFFSET_RESET:earliest}
+      enable-auto-commit: false
+
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+    listener:
+      ack-mode: record
+
+bridge:
+  kafka:
+    topic: ${KAFKA_TOPIC:iobservability-alerts}
+
+  apigee:
+    token-url: ${APIGEE_TOKEN_URL}
+    api-url: ${APIGEE_API_URL}
+
+    api-key: ${APIGEE_API_KEY}
+    client-key: ${APIGEE_CLIENT_KEY}
+    client-secret: ${APIGEE_CLIENT_SECRET}
+
+    api-key-header: ${APIGEE_API_KEY_HEADER:apikey}
+
+    service: ${APIGEE_SERVICE:}
+    client-info: ${APIGEE_CLIENT_INFO:}
+    optional-param: ${APIGEE_OPTIONAL_PARAM:}
+
+    connect-timeout-ms: ${APIGEE_CONNECT_TIMEOUT_MS:5000}
+    read-timeout-ms: ${APIGEE_READ_TIMEOUT_MS:10000}
+
+  encryption:
+    public-certificate-path: ${APIGEE_PUBLIC_CERTIFICATE_PATH}
+    iv-mode: ${ENCRYPTION_IV_MODE:PREPENDED}
+    oaep-hashing-algorithm: ${OAEP_HASHING_ALGORITHM:SHA-256}
+
+  retry:
+    max-attempts: ${BRIDGE_MAX_ATTEMPTS:3}
+    backoff-ms: ${BRIDGE_RETRY_BACKOFF_MS:1000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  level:
+    com.company.bridge: INFO
